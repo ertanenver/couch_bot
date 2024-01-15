@@ -19,7 +19,7 @@ class Base(StatesGroup):
 @router.message(CommandStart())
 async def welcome(message: Message, state: FSMContext):
     await state.set_state(Base.start)
-    await message.answer(f'Привет!👋', reply_markup=get_inlane_keyboard('welcome_msg'))
+    await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
 
 @router.message(Command('help'))
 async def help(message: Message, state: FSMContext):
@@ -28,22 +28,22 @@ async def help(message: Message, state: FSMContext):
 
 @router.message(Command('owner'))
 async def help(message: Message, state: FSMContext):
-    await state.set_state(Base.help)
+    await state.set_state(Base.owner)
     await message.answer(f'Вы можете со мной связаться <i>здесь - @shinyaa17</i>')
 
 @router.message(Command('act'))
 async def help(message: Message, state: FSMContext):
-    await state.set_state(Base.help)
+    await state.set_state(Base.act)
     await message.answer(f'У вас пока нет доступа')
 
 @router.message(Command('check'))
 async def help(message: Message, state: FSMContext):
-    await state.set_state(Base.help)
+    await state.set_state(Base.check)
     await message.answer(f'У вас пока нет доступа')
 
 @router.message(Command('stat'))
 async def help(message: Message, state: FSMContext):
-    await state.set_state(Base.help)
+    await state.set_state(Base.stat)
     await message.answer(f'У вас пока нет доступа')
 
 @router.message(Command('info'))
@@ -57,6 +57,6 @@ async def info(message: Message, state: FSMContext):
 @router.callback_query(F.data == 'button_0')
 async def main_menu(call: CallbackQuery, state: FSMContext):
     await state.set_state(Base.start)
-    await call.message.answer(f'Привет!👋', reply_markup=get_inlane_keyboard('welcome_msg'))
+    await call.message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
     await call.answer()
 

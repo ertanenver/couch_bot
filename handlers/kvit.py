@@ -12,6 +12,8 @@ from keyboards.inline import get_inlane_keyboard
 from funcs.get_month import get_month
 from funcs.kvit import read_excel
 from funcs.toExcel import toExcel
+import os
+
 router = Router()
 
 class Kvit(StatesGroup):
@@ -114,10 +116,14 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     dict = get_month()
     purpose = dict["previous_month"]
     file_from_pc = f"{call.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
-    await call.message.answer(purpose)
+    if call.from_user.id == 1190681639:
+        FilePDF=f'Квитанции {purpose}.pdf'
+    else:
+        FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+    os.remove(FilePDF)
 
 
 
@@ -131,10 +137,14 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     dict = get_month()
     purpose = dict["current_month"]
     file_from_pc = f"{call.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
-    await call.message.answer(purpose)
+    if call.from_user.id == 1190681639:
+        FilePDF=f'Квитанции {purpose}.pdf'
+    else:
+        FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+    os.remove(FilePDF)
 
 
 
@@ -148,10 +158,14 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     dict = get_month()
     purpose = dict["following_month"]
     file_from_pc = f"{call.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
-    await call.message.answer(purpose)
+    if call.from_user.id == 1190681639:
+        FilePDF=f'Квитанции {purpose}.pdf'
+    else:
+        FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+    os.remove(FilePDF)
 
 
 
@@ -163,10 +177,15 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     )
     await state.set_state(Kvit.FilePdf)
     purpose = "Ежегодный благотворительный членский взнос"
+    purpose_short = "Ежегодный членский взнос"
     file_from_pc = f"{call.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc,purpose=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'),caption=purpose)
-    #await call.message.answer(purpose)
+    if call.from_user.id == 1190681639:
+        FilePDF=f'Квитанции {purpose_short}.pdf'
+    else:
+        FilePDF=f'Квитанции {purpose_short} {call.from_user.id}.pdf'
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+    os.remove(FilePDF)
 
 

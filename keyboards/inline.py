@@ -10,8 +10,8 @@ def get_inlane_keyboard(mode):
 
     if mode == 'welcome_msg':
         keyb_welcome_msg = InlineKeyboardBuilder()
-        keyb_welcome_msg.button(text='Квитанции', callback_data='kvit_mode')
-        keyb_welcome_msg.button(text='Сверка', callback_data='sverka_mode')
+        keyb_welcome_msg.button(text='Создание квитанций', callback_data='kvit_mode')
+        keyb_welcome_msg.button(text='Работа со сверкой', callback_data='sverka_mode')
         #keyb_welcome_msg.button(text='Соревнования', callback_data='comp_mode')
         keyb_welcome_msg.button(text='Настройки', callback_data='settings')
         keyb_welcome_msg.adjust(2,1)
