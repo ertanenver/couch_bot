@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from funcs.get_month import get_month
+from funcs.get_month import get_month, months
 
 def get_inlane_keyboard(mode):
     if mode == 'main_menu':
@@ -61,7 +61,7 @@ def get_inlane_keyboard(mode):
         keyb_kvit_purpose.button(text=f'{dict["previous_month"].title()}', callback_data=f'kvit_purpose_previous_month')
         keyb_kvit_purpose.button(text=f'{dict["current_month"].title()}', callback_data=f'kvit_purpose_current_month')
         keyb_kvit_purpose.button(text=f'{dict["following_month"].title()}', callback_data=f'kvit_purpose_following_month')
-        #keyb_kvit_purpose.button(text=f'✏️ Ввести самостоятельно ✏️', callback_data='kvit_input_purpose_mode')
+        keyb_kvit_purpose.button(text=f'✏️ Ввести самостоятельно ✏️', callback_data='kvit_input_purpose_mode')
         keyb_kvit_purpose.button(text=f'Ежегодный членский взнос', callback_data='kvit_yearly_fee_mode')
         keyb_kvit_purpose.button(text='В основное меню ⤴️', callback_data='button_0')
         keyb_kvit_purpose.adjust(3,1,1,1)

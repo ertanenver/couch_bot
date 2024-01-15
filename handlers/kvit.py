@@ -57,7 +57,7 @@ async def kvit_mode(message: Message, state: FSMContext):
 async def excel(message: Message, state: FSMContext):
     toExcel(text=message.text,Excel=f'/tmp/{message.from_user.id}.xlsx')
     await state.set_state(Kvit.Purpose)
-    await message.answer("Выберете назначение платежа, чтобы ввести самостоятельно отправьте его мне",
+    await message.answer("Выберете назначение платежа, чтобы ввести самостоятельно отправьте его текстом",
                          reply_markup=get_inlane_keyboard('kvit_purpose'))
 
 
@@ -72,12 +72,25 @@ async def excel(message: Message, state: FSMContext, bot: Bot):
             destination=f"/tmp/{message.from_user.id}.xlsx"
         )
         await state.set_state(Kvit.Purpose)
-        await message.answer("Выберете назначение платежа, чтобы ввести самостоятельно отправьте его мне", reply_markup=get_inlane_keyboard('kvit_purpose'))
+        await message.answer("Выберете назначение платежа", reply_markup=get_inlane_keyboard('kvit_purpose'))
 
     else:
         await message.answer("Неправильный формат файла, попробуйте еще раз")
 
 
+@router.callback_query(F.data == 'kvit_input_purpose_mode')
+async def purpose(call: CallbackQuery, state: FSMContext):
+    await call.bot.send_chat_action(
+        chat_id=call.from_user.id,
+        action="upload_document",
+    )
+    dict = get_month()
+    purpose = dict["previous_month"]
+    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
+    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
+    await call.message.answer(purpose)
+    await call.answer()
 
 @router.message(Kvit.Purpose and F.text)
 async def purpose(message: Message, state: FSMContext):
