@@ -55,9 +55,9 @@ async def kvit_mode(message: Message, state: FSMContext):
 # toExcel(str - сообщение пользователя,str - название файла, который создаетс с его id)
 @router.message(Kvit.FileExcel and F.text)
 async def excel(message: Message, state: FSMContext):
-    toExcel(text=message.text,Excel=f'/tmp/{message.from_user.id}.xlsx')
+    toExcel(text=message.text,Excel=f'{message.from_user.id}.xlsx')
     await state.set_state(Kvit.Purpose)
-    await message.answer("Выберете назначение платежа, чтобы ввести самостоятельно отправьте его текстом",
+    await message.answer("Выберете назначение платежа",
                          reply_markup=get_inlane_keyboard('kvit_purpose'))
 
 
@@ -69,7 +69,7 @@ async def excel(message: Message, state: FSMContext, bot: Bot):
     if '.xlsx' in message.document.file_name:
         await bot.download(
             message.document,
-            destination=f"/tmp/{message.from_user.id}.xlsx"
+            destination=f"{message.from_user.id}.xlsx"
         )
         await state.set_state(Kvit.Purpose)
         await message.answer("Выберете назначение платежа", reply_markup=get_inlane_keyboard('kvit_purpose'))
@@ -86,7 +86,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     )
     dict = get_month()
     purpose = dict["previous_month"]
-    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    file_from_pc = f"{call.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
     await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
     await call.message.answer(purpose)
@@ -99,7 +99,7 @@ async def purpose(message: Message, state: FSMContext):
         action="upload_document"
     )
     purpose = str(message.text)
-    file_from_pc = f"/tmp/{message.from_user.id}.xlsx"
+    file_from_pc = f"{message.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc, month=purpose, FilePDF=f'kvit_{message.from_user.id}.pdf')
     await message.answer_document(FSInputFile(f'kvit_{message.from_user.id}.pdf'))
     await message.answer(purpose)
@@ -113,7 +113,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     )
     dict = get_month()
     purpose = dict["previous_month"]
-    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    file_from_pc = f"{call.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
     await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
     await call.message.answer(purpose)
@@ -130,7 +130,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     await state.set_state(Kvit.FilePdf)
     dict = get_month()
     purpose = dict["current_month"]
-    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    file_from_pc = f"{call.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
     await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
     await call.message.answer(purpose)
@@ -147,7 +147,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     await state.set_state(Kvit.FilePdf)
     dict = get_month()
     purpose = dict["following_month"]
-    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    file_from_pc = f"{call.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
     await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
     await call.message.answer(purpose)
@@ -163,10 +163,10 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     )
     await state.set_state(Kvit.FilePdf)
     purpose = "Ежегодный благотворительный членский взнос"
-    file_from_pc = f"/tmp/{call.from_user.id}.xlsx"
+    file_from_pc = f"{call.from_user.id}.xlsx"
     read_excel(FileExcel=file_from_pc,purpose=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
-    await call.message.answer(purpose)
+    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'),caption=purpose)
+    #await call.message.answer(purpose)
     await call.answer()
 
 

@@ -59,3 +59,4 @@ async def main_menu(call: CallbackQuery, state: FSMContext):
     await state.set_state(Base.start)
     await call.message.answer(f'Привет!👋', reply_markup=get_inlane_keyboard('welcome_msg'))
     await call.answer()
+
