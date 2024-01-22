@@ -15,7 +15,4 @@ async def kvit_mode(call: CallbackQuery, state: FSMContext):
     await state.set_state(Sverka.ddd)
     await call.answer('Может быть позже?)')
 
-@router.callback_query(F.data == 'settings')
-async def kvit_mode(call: CallbackQuery, state: FSMContext):
-    await state.set_state(Sverka.ddd)
-    await call.answer('Может быть позже?)')
+

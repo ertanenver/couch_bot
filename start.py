@@ -2,7 +2,7 @@ import asyncio
 import logging
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message
-from handlers import general, kvit, sverka, admin
+from handlers import general, kvit, settings_bot, sverka, admin
 from settings import settings
 from aiogram.filters import Command
 from aiogram.methods.stop_poll import StopPoll
@@ -12,7 +12,7 @@ async def start_bot(bot: Bot):
     await bot.send_message(settings.bots.admin_id, text='Запущен бот\n"Соревновательный"\n\n/start')
 
 async def stop_bot(bot: Bot):
-    await bot.send_message(settings.bots.admin_id, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего подключилось</i>:50000</u>')
+    await bot.send_message(settings.bots.admin_id, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего подключилось</i>:200</u>')
 
 
 async def start():
@@ -24,7 +24,7 @@ async def start():
     dp = Dispatcher()
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
-    dp.include_routers(general.router, kvit.router, sverka.router, admin.router)
+    dp.include_routers(general.router, kvit.router, sverka.router, admin.router, settings_bot.router)
 
     @dp.message(Command('kill'))
     async def stop(message: Message):

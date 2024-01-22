@@ -55,7 +55,7 @@ async def kvit_mode(message: Message, state: FSMContext):
 
 # обработчик сверки при отправке ее текстом
 # toExcel(str - сообщение пользователя,str - название файла, который создаетс с его id)
-@router.message(Kvit.FileExcel and F.text)
+@router.message(Kvit.FileExcel, F.text)
 async def excel(message: Message, state: FSMContext):
     toExcel(text=message.text,Excel=f'{message.from_user.id}.xlsx')
     await state.set_state(Kvit.Purpose)
@@ -82,29 +82,24 @@ async def excel(message: Message, state: FSMContext, bot: Bot):
 
 @router.callback_query(F.data == 'kvit_input_purpose_mode')
 async def purpose(call: CallbackQuery, state: FSMContext):
-    await call.bot.send_chat_action(
-        chat_id=call.from_user.id,
-        action="upload_document",
-    )
-    dict = get_month()
-    purpose = dict["previous_month"]
-    file_from_pc = f"{call.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=f'kvit_{call.from_user.id}.pdf')
-    await call.message.answer_document(FSInputFile(f'kvit_{call.from_user.id}.pdf'))
-    await call.message.answer(purpose)
+    await call.message.answer("Каким будет ваше назначение платежа?")
     await call.answer()
+    await state.set_state(Kvit.Purpose)
 
-@router.message(Kvit.Purpose and F.text)
+@router.message(Kvit.Purpose, F.text)
 async def purpose(message: Message, state: FSMContext):
-    await Message.bot.send_chat_action(
-        chat_id=Message.from_user.id,
+    await message.bot.send_chat_action(
+        chat_id=message.from_user.id,
         action="upload_document"
     )
     purpose = str(message.text)
     file_from_pc = f"{message.from_user.id}.xlsx"
-    read_excel(FileExcel=file_from_pc, month=purpose, FilePDF=f'kvit_{message.from_user.id}.pdf')
-    await message.answer_document(FSInputFile(f'kvit_{message.from_user.id}.pdf'))
-    await message.answer(purpose)
+    if message.from_user.id == 1190681639:
+        FilePDF=f'Квитанции {purpose}.pdf'
+    else:
+        FilePDF=f'Квитанции {purpose} {message.from_user.id}.pdf'
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    await message.answer_document(FSInputFile(FilePDF), caption=purpose)
 
 
 @router.callback_query(F.data == 'kvit_purpose_previous_month')
@@ -121,7 +116,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
-    await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
+    await call.message.answer_document(FSInputFile(FilePDF), caption=purpose)
     await call.answer()
     os.remove(FilePDF)
 

@@ -81,10 +81,11 @@ def get_inlane_keyboard(mode):
     if mode == 'settings': 
         keyb_settings = InlineKeyboardBuilder()
         keyb_settings.button(text='📄 Кол-во квитанций на листе', callback_data='settings_sum_kvit')
+        keyb_settings.button(text='⚡️ Фича', callback_data='settings_feature')
         keyb_settings.button(text='🔔 Напоминания', callback_data='settings_notification')
         keyb_settings.button(text='👤 Выйти из аккаунта', callback_data='unlogin')
         keyb_settings.button(text='В основное меню ⤴️', callback_data='button_0')
-        keyb_settings.adjust(1,2,1)
+        keyb_settings.adjust(1,1,2,1)
         return keyb_settings.as_markup()
 
     if mode == 'settings_notification': 
@@ -94,6 +95,14 @@ def get_inlane_keyboard(mode):
         keyb_settings_notification.button(text='В основное меню ⤴️', callback_data='button_0')
         keyb_settings_notification.adjust(1)
         return keyb_settings_notification.as_markup()
+    
+    if mode == 'settings_sum_kvit':
+        keyb_settings_sum_kvit = InlineKeyboardBuilder()
+        keyb_settings_sum_kvit.button(text='3 квитанции',callback_data="keyb_settings_sum_kvit_3")
+        keyb_settings_sum_kvit.button(text='4 квитанции',callback_data="keyb_settings_sum_kvit_4")
+        keyb_settings_sum_kvit.button(text='В основное меню ⤴️', callback_data='button_0')
+        keyb_settings_sum_kvit.adjust(2,1)
+        return keyb_settings_sum_kvit.as_markup()
 
 
 
