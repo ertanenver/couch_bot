@@ -100,6 +100,7 @@ async def purpose(message: Message, state: FSMContext):
         FilePDF=f'Квитанции {purpose} {message.from_user.id}.pdf'
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
     await message.answer_document(FSInputFile(FilePDF), caption=purpose)
+    os.remove(FilePDF)
 
 
 @router.callback_query(F.data == 'kvit_purpose_previous_month')
