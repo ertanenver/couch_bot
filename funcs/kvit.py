@@ -13,7 +13,7 @@ import openpyxl
 from database.get_from_db import get_feature
 styles = getSampleStyleSheet()
 
-pdfmetrics.registerFont (TTFont('calibri', "calibri.ttf"))
+pdfmetrics.registerFont (TTFont('calibri', "./docs/calibri.ttf"))
 
 
 def read_excel(FileExcel, FilePDF = 'Квитанции.pdf', purpose = 'Благотворительный взнос за ', month = '', feature = '', id =''):

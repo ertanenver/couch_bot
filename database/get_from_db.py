@@ -76,7 +76,7 @@ def count_users():
 
 
 
-def get_permission_list(id:int):
+def get_permission(id:int):
     connection = sqlite3.connect('couch_bot.db')
 
     cursor = connection.cursor()
@@ -87,6 +87,22 @@ def get_permission_list(id:int):
         result = "None"
     else:
         result = str(result[0][0])
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return result
+
+
+
+def get_permission_list():
+    connection = sqlite3.connect('couch_bot.db')
+
+    cursor = connection.cursor()
+
+    cursor.execute('SELECT id, permission FROM Users WHERE permission = "super_user"')
+    result = [row[0] for row in cursor.fetchall()]
 
     connection.commit()
     cursor.close()
