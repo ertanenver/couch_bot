@@ -6,13 +6,14 @@ from handlers import general, kvit, settings_bot, sverka, admin
 from settings import settings
 from aiogram.filters import Command
 from database.create_db import create_db
+from database.get_from_db import count_users
 
 async def start_bot(bot: Bot):
 
     await bot.send_message(settings.bots.admin_id, text='Запущен бот\n"Соревновательный"\n\n/start')
 
 async def stop_bot(bot: Bot):
-    await bot.send_message(settings.bots.admin_id, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего подключилось</i>:200</u>')
+    await bot.send_message(settings.bots.admin_id, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего пользователей</i>: {count_users()}</u>')
 
 
 async def start():

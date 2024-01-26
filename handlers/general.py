@@ -5,7 +5,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from keyboards import get_inlane_keyboard
 from aiogram.utils.markdown import hlink
-from database.insert_db import insert_init_data_db
+from database.insert_db import insert_id, insert_fio, insert_phone_number
+from database.get_from_db import is_login, count_users
 router = Router()
 
 class Base(StatesGroup):
@@ -16,11 +17,32 @@ class Base(StatesGroup):
     act = State()
     owner = State()
     stat = State()
+    fio = State()
+    phone_number = State()
 
 @router.message(CommandStart())
 async def welcome(message: Message, state: FSMContext):
-    await state.set_state(Base.start)
-    await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
+    login = str(is_login(message.from_user.id))
+    if login != '[]':    
+        await state.set_state(Base.start)
+        await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
+    else:
+        insert_id(id=message.from_user.id)
+        await state.set_state(Base.fio)
+        await message.answer(f'Привет👋, кажется мы еще не знакомы. Доступ к боту могут иметь лишь тренера.\n\nДля авторизации пришли мне свое ФИО, пожалуйста')
+
+@router.message(F.text and Base.fio)
+async def reg_fio(message:Message,state: FSMContext):
+    insert_fio(id=message.from_user.id, fio= message.text)
+    await message.answer(f'Хорошо, запомню вас как <i>{message.text}</i>')
+    await state.set_state(Base.phone_number)
+    await message.answer(f'Осталось чуть-чуть...\nПередайте мне теперь свой номер телефона\n\nОбратите внимание, для безопасности данных, можно использовать только один аккаунт в тг для его смены придется обращаться к администратору')
+
+@router.message(F.text and Base.phone_number or F.contact and Base.phone_number)
+async def reg_phone_number(message:Message,state: FSMContext):
+    insert_phone_number(id=message.from_user.id, phone_number= message.text)
+    await message.answer(f'Записываю ваш номер как <u>{message.text}</u>')
+
 
 
 @router.message(Command('help'))
@@ -46,7 +68,7 @@ async def help(message: Message, state: FSMContext):
 @router.message(Command('stat'))
 async def help(message: Message, state: FSMContext):
     await state.set_state(Base.stat)
-    await message.answer(f'У вас пока нет доступа')
+    await message.answer(f'Кол-во подключенных пользователей: {count_users()}')
 
 @router.message(Command('info'))
 async def info(message: Message, state: FSMContext):

@@ -12,6 +12,8 @@ from keyboards.inline import get_inlane_keyboard
 from funcs.get_month import get_month
 from funcs.kvit import read_excel
 from funcs.toExcel import toExcel
+from database.insert_db import insert_feature
+from database.get_from_db import get_feature_list
 import os
 
 router = Router()
@@ -38,8 +40,10 @@ async def settings_sum_kvit_on_page(call: CallbackQuery, state: FSMContext):
     await state.set_state(Settings.Feature)
     await call.message.answer(text="Вы можете добавить уникальные символы, инициалы, что угодно на свои квитанции.\n\nВне зависимости от вашего выбора назначения, фича будет писаться в конце. Напишите свою мне",
                                reply_markup=get_inlane_keyboard('main_menu'))
+    await call.message.answer(text=f'Список всех занятых фич:\n\n{get_feature_list()}')
     await call.answer()
 
 @router.message(F.text and Settings.Feature)
 async def feature(message: Message, state: FSMContext):
-    await message.answer(f'Здесь записываем {message.text} в БД, а потом добавляешь проверку на нее в хендлере квитанций')
+    insert_feature(id=message.from_user.id, feature= message.text)
+    await message.answer(f'{message.text} теперь добавляется в назначение ваших квитанций')

@@ -114,7 +114,7 @@ async def purpose(message: Message, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose} {message.from_user.id}.pdf'
 
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF, id=message.from_user.id)
 
     await message.answer_document(FSInputFile(FilePDF), caption=purpose)
 
@@ -142,7 +142,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
 
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF, id=call.from_user.id)
 
     await call.message.answer_document(FSInputFile(FilePDF), caption=purpose)
     await call.answer()
@@ -171,7 +171,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
 
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF, id=call.from_user.id)
 
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
@@ -200,7 +200,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
 
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF, id=call.from_user.id)
 
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
@@ -228,7 +228,7 @@ async def purpose(call: CallbackQuery, state: FSMContext):
     else:
         FilePDF=f'Квитанции {purpose_short} {call.from_user.id}.pdf'
 
-    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+    read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF, id=call.from_user.id)
 
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()

@@ -12,10 +12,10 @@ def create_db():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS Users (
     id INTEGER PRIMARY KEY,
-    fio TEXT NOT NULL UNIQUE,
-    permission TEXT NOT NULL,
+    fio TEXT UNIQUE,
+    permission TEXT,
     work_place TEXT,
-    phone_number TEXT NOT NULL,
+    phone_number TEXT,
     login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     feature TEXT
     )

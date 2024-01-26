@@ -10,18 +10,25 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 import openpyxl
 
+from database.get_from_db import get_feature
 styles = getSampleStyleSheet()
 
 pdfmetrics.registerFont (TTFont('calibri', "calibri.ttf"))
 
 
-def read_excel(FileExcel, FilePDF = 'Квитанции.pdf', purpose = 'Благотворительный взнос за ', month = '', feature = ''):
+def read_excel(FileExcel, FilePDF = 'Квитанции.pdf', purpose = 'Благотворительный взнос за ', month = '', feature = '', id =''):
+    
+    feature_from_db = get_feature(id)
 
+    
     gruppa=""
 
     c = canvas.Canvas(FilePDF, pagesize=A4)
     feature = " " + feature if feature != "" else ""
     purpose += month + feature
+
+    if feature_from_db != "None":
+        purpose += " " + feature_from_db
 
     wb = openpyxl.load_workbook(FileExcel)
     for ws in wb:
