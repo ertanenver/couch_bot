@@ -6,7 +6,7 @@ from openpyxl.styles import Alignment
 # couch type: {"fio":["kindergarden 1","schoool 35"]}
 months = {'01': 'январь', '02': 'февраль', '03': 'март', '04': 'апрель', '05': 'май', '06': 'июнь', '07': 'июль', '08': 'август', '09': 'сентябрь', '10': 'октябрь', '11': 'ноябрь', '12': 'декабрь'}
 
-def create_akt(couch:dict,code='09'):
+def create_akt(couch:dict, code='09'):
     for key, value in couch.items():
         arr = value
         fio = key

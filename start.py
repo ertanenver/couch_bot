@@ -5,7 +5,7 @@ from aiogram.types import Message
 from handlers import general, kvit, settings_bot, sverka, admin
 from settings import settings
 from aiogram.filters import Command
-from aiogram.methods.stop_poll import StopPoll
+from database.create_db import create_db
 
 async def start_bot(bot: Bot):
 
@@ -21,6 +21,9 @@ async def start():
                                 "%(message)s - (%(filename)s).%(funcName)s(%(lineno)d)")
                         
     bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')
+
+    create_db()
+    
     dp = Dispatcher()
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)

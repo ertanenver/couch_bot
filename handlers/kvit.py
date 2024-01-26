@@ -14,7 +14,11 @@ from funcs.kvit import read_excel
 from funcs.toExcel import toExcel
 import os
 
+
+
 router = Router()
+
+
 
 class Kvit(StatesGroup):
     FileExcel = State()
@@ -80,108 +84,155 @@ async def excel(message: Message, state: FSMContext, bot: Bot):
         await message.answer("Неправильный формат файла, попробуйте еще раз")
 
 
+
+# ввод назначения платежа самостоятельно, без использования клавиатуры
 @router.callback_query(F.data == 'kvit_input_purpose_mode')
 async def purpose(call: CallbackQuery, state: FSMContext):
     await call.message.answer("Каким будет ваше назначение платежа?")
     await call.answer()
     await state.set_state(Kvit.Purpose)
 
+
+
+# Обработка назначения при самостоятельном вводе
+# Отправляем пользователю действие - "Отправка файла"
+# Вызываем функции по созданию квитанций
 @router.message(Kvit.Purpose, F.text)
 async def purpose(message: Message, state: FSMContext):
     await message.bot.send_chat_action(
         chat_id=message.from_user.id,
         action="upload_document"
     )
+
+    await state.set_state(Kvit.FilePdf)
+    
     purpose = str(message.text)
     file_from_pc = f"{message.from_user.id}.xlsx"
+
     if message.from_user.id == 1190681639:
         FilePDF=f'Квитанции {purpose}.pdf'
     else:
         FilePDF=f'Квитанции {purpose} {message.from_user.id}.pdf'
+
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+
     await message.answer_document(FSInputFile(FilePDF), caption=purpose)
+
     os.remove(FilePDF)
 
 
+
+# Обработка прошлого месяца
 @router.callback_query(F.data == 'kvit_purpose_previous_month')
 async def purpose(call: CallbackQuery, state: FSMContext):
     await call.bot.send_chat_action(
         chat_id=call.from_user.id,
         action="upload_document",
     )
+    
+    await state.set_state(Kvit.FilePdf)
+
     dict = get_month()
     purpose = dict["previous_month"]
+
     file_from_pc = f"{call.from_user.id}.xlsx"
+
     if call.from_user.id == 1190681639:
         FilePDF=f'Квитанции {purpose}.pdf'
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+
     await call.message.answer_document(FSInputFile(FilePDF), caption=purpose)
     await call.answer()
+
     os.remove(FilePDF)
 
 
 
+# обработка текущего месяца
 @router.callback_query(F.data == 'kvit_purpose_current_month')
 async def purpose(call: CallbackQuery, state: FSMContext):
     await call.bot.send_chat_action(
         chat_id=call.from_user.id,
         action="upload_document"
     )
+
     await state.set_state(Kvit.FilePdf)
+
     dict = get_month()
     purpose = dict["current_month"]
+
     file_from_pc = f"{call.from_user.id}.xlsx"
+
     if call.from_user.id == 1190681639:
         FilePDF=f'Квитанции {purpose}.pdf'
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+
     os.remove(FilePDF)
 
 
 
+# обработка следующего месяца
 @router.callback_query(F.data == 'kvit_purpose_following_month')
 async def purpose(call: CallbackQuery, state: FSMContext):
     await call.bot.send_chat_action(
         chat_id=call.from_user.id,
         action="upload_document"
     )
+
     await state.set_state(Kvit.FilePdf)
+
     dict = get_month()
     purpose = dict["following_month"]
+
     file_from_pc = f"{call.from_user.id}.xlsx"
+
     if call.from_user.id == 1190681639:
         FilePDF=f'Квитанции {purpose}.pdf'
     else:
         FilePDF=f'Квитанции {purpose} {call.from_user.id}.pdf'
+
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+
     os.remove(FilePDF)
 
 
 
+# Обработка ежегодного членского взноса
 @router.callback_query(F.data == 'kvit_yearly_fee_mode')
 async def purpose(call: CallbackQuery, state: FSMContext):
     await call.bot.send_chat_action(
         chat_id=call.from_user.id,
         action="upload_document"
     )
+
     await state.set_state(Kvit.FilePdf)
+
     purpose = "Ежегодный благотворительный членский взнос"
     purpose_short = "Ежегодный членский взнос"
     file_from_pc = f"{call.from_user.id}.xlsx"
+
     if call.from_user.id == 1190681639:
         FilePDF=f'Квитанции {purpose_short}.pdf'
     else:
         FilePDF=f'Квитанции {purpose_short} {call.from_user.id}.pdf'
+
     read_excel(FileExcel=file_from_pc,month=purpose,FilePDF=FilePDF)
+
     await call.message.answer_document(FSInputFile(FilePDF),caption=purpose)
     await call.answer()
+    
     os.remove(FilePDF)
 
 

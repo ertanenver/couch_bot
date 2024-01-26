@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from keyboards import get_inlane_keyboard
 from aiogram.utils.markdown import hlink
+from database.insert_db import insert_init_data_db
 router = Router()
 
 class Base(StatesGroup):
@@ -20,6 +21,7 @@ class Base(StatesGroup):
 async def welcome(message: Message, state: FSMContext):
     await state.set_state(Base.start)
     await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
+
 
 @router.message(Command('help'))
 async def help(message: Message, state: FSMContext):
