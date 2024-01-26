@@ -6,7 +6,8 @@ from handlers import general, kvit, settings_bot, sverka, admin
 from settings import settings
 from aiogram.filters import Command
 from database.create_db import create_db
-from database.get_from_db import count_users, get_permission, get_permission_list
+from database.get_from_db import count_users, get_permission, get_permission_list, is_login
+from database.insert_db import insert_id,insert_fio,insert_permission
 
 async def start_bot(bot: Bot):
     for admin in get_permission_list():
@@ -26,6 +27,11 @@ async def start():
 
     create_db()
     
+    if is_login(1) != "[]":
+        insert_id(1)
+        insert_fio(1,"admin")
+        insert_permission(1,'super_user')
+
     dp = Dispatcher()
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
