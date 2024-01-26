@@ -6,7 +6,7 @@ from handlers import general, kvit, settings_bot, sverka, admin
 from settings import settings
 from aiogram.filters import Command
 from database.create_db import create_db
-from database.get_from_db import count_users
+from database.get_from_db import count_users, get_permission
 
 async def start_bot(bot: Bot):
 
@@ -30,14 +30,25 @@ async def start():
     dp.shutdown.register(stop_bot)
     dp.include_routers(general.router, kvit.router, sverka.router, admin.router, settings_bot.router)
 
+    @dp.message(Command('stop'))
+    async def stop(message: Message):
+        if message.from_user.id == settings.bots.admin_id or get_permission(id=message.from_user.id) == 'super_user':
+            await message.answer("Вы уверены, что хотите выключить бота? Отменить это действие будет нельзя. Для продолжения работы, будет необходимо запустить его вручную\n\nЕсли согласны, напишите: /kill")
+        else:
+            await message.answer_sticker(sticker='CAACAgIAAxkBAAIHKmWlI-9p2YHzsboRA0do6Ilxszq6AAJ-AAPBnGAMCxR_3b0i_fM0BA')
+            await message.answer(f'Ты не похож на админа\n\n<i><u>Возможно стоит сменить аккаунт?)</u></i>')
+
+
+
     @dp.message(Command('kill'))
     async def stop(message: Message):
-        if message.from_user.id == settings.bots.admin_id:
+        if message.from_user.id == settings.bots.admin_id or get_permission(id=message.from_user.id) == 'super_user':
             await message.answer(f'Окей, бот будет выключен')
             quit()
         else:
             await message.answer_sticker(sticker='CAACAgIAAxkBAAIHKmWlI-9p2YHzsboRA0do6Ilxszq6AAJ-AAPBnGAMCxR_3b0i_fM0BA')
             await message.answer(f'Ты не похож на админа\n\n<i><u>Возможно стоит сменить аккаунт?)</u></i>')
+
 
 
     try:

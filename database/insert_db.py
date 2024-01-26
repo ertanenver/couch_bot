@@ -65,4 +65,13 @@ def insert_feature(id:int, feature:str):
 
 
 
+def insert_permission(id:int, permission:str):
+    connection = sqlite3.connect('couch_bot.db')
 
+    cursor = connection.cursor()
+
+    cursor.execute('UPDATE Users SET permission = "%s" WHERE id = "%s"' % (permission, id))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
