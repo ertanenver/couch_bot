@@ -76,12 +76,12 @@ def count_users():
 
 
 
-def get_permission(id:int):
+def get_permission_list(id:int):
     connection = sqlite3.connect('couch_bot.db')
 
     cursor = connection.cursor()
 
-    cursor.execute('SELECT permission FROM Users WHERE id = "%s"' % (id))
+    cursor.execute('SELECT permission FROM Users')
     result = cursor.fetchall()
     if result == '[]':
         result = "None"

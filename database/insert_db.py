@@ -75,3 +75,6 @@ def insert_permission(id:int, permission:str):
     connection.commit()
     cursor.close()
     connection.close()
+
+
+
