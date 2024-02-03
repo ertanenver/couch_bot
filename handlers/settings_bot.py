@@ -14,7 +14,7 @@ from funcs.kvit import read_excel
 from funcs.toExcel import toExcel
 from database.insert_db import insert_feature
 from database.get_from_db import get_feature_list
-from database.delete_from_db import delete_all
+from database.delete_from_db import delete_all  
 import os
 
 router = Router()
