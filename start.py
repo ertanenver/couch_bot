@@ -49,7 +49,7 @@ async def start():
     async def stop(message: Message):
         if message.from_user.id == settings.bots.admin_id or get_permission(id=message.from_user.id) == 'super_user':
             await message.answer(f'Окей, бот будет выключен')
-            stop_bot()
+            stop_bot
             quit()
         else:
             await message.answer_sticker(sticker='CAACAgIAAxkBAAIHKmWlI-9p2YHzsboRA0do6Ilxszq6AAJ-AAPBnGAMCxR_3b0i_fM0BA')

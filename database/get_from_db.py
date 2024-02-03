@@ -25,7 +25,7 @@ def is_ok_fio(id:int):
     cursor.execute('SELECT * FROM Users WHERE id = "%s"' % (id))
     result = cursor.fetchall()
     print(result)
-    if result[0][1]:
+    if is_login(id):
         pattern = r'^[а-яА-Я]+\s[а-яА-Я]+\s[а-яА-Я]+$'
         match = re.match(pattern, result[0][1])
         if match:

@@ -67,7 +67,7 @@ async def reg_phone_number(message:Message,state: FSMContext):
             phone = '+7 (' + phone[1:4] + ') ' + phone[4:7] + '-' + phone[7:]
         elif len(phone) == 12:
             phone = '+' + phone[:1] + ' (' + phone[2:5] + ') ' + phone[5:8] + '-' + phone[8:]
-        insert_phone_number(id=message.from_user.id, phone_number= message.text)
+        insert_phone_number(id=message.from_user.id, phone_number= phone)
         await message.answer(f'Записываю ваш номер как <u>{phone}</u>')
         await state.set_state(Base.start)
         await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))    
