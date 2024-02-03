@@ -14,6 +14,7 @@ from funcs.kvit import read_excel
 from funcs.toExcel import toExcel
 from database.insert_db import insert_feature
 from database.get_from_db import get_feature_list
+from database.delete_from_db import delete_all
 import os
 
 router = Router()
@@ -47,3 +48,12 @@ async def settings_sum_kvit_on_page(call: CallbackQuery, state: FSMContext):
 async def feature(message: Message, state: FSMContext):
     insert_feature(id=message.from_user.id, feature= message.text)
     await message.answer(f'{message.text} теперь добавляется в назначение ваших квитанций')
+
+
+
+@router.callback_query(F.data == 'unlogin')
+async def settings_sum_kvit_on_page(call: CallbackQuery, state: FSMContext):
+    await state.set_state(Settings.Feature)
+    await call.message.answer(text="Вся информация о вас удалена\n\nЕсли нажать /start придется ввести все заново")
+    delete_all(call.from_user.id)
+    await call.answer()
