@@ -8,20 +8,17 @@ from aiogram.filters import Command
 from database.create_db import create_db
 from database.get_from_db import count_users, get_permission, get_permission_list, is_login
 from database.insert_db import insert_id,insert_fio,insert_permission
+from database.delete_from_db import delete_all          
 
 async def start_bot(bot: Bot):
-    try:
-        for admin in get_permission_list():
-            await bot.send_message(admin, text='Запущен бот\n"Соревновательный"\n\n/start')
-    except:
-        pass
+
+    for admin in get_permission_list():
+        await bot.send_message(admin, text='Запущен бот\n"Соревновательный"\n\n/start')
+
 
 async def stop_bot(bot: Bot):
-    try:
-        for admin in get_permission_list():
-            await bot.send_message(admin, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего пользователей</i>: {count_users()}</u>')
-    except:
-        pass
+    for admin in get_permission_list():
+        await bot.send_message(admin, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего пользователей</i>: {count_users()}</u>')
 
 async def start():
     logging.basicConfig(level=logging.INFO,
@@ -31,11 +28,7 @@ async def start():
     bot = Bot(token=settings.bots.bot_token, parse_mode='HTML')
 
     create_db()
-    
-    if is_login(1) != "[]":
-        insert_id(1)
-        insert_fio(1,"admin")
-        insert_permission(1,'super_user')
+
 
     dp = Dispatcher()
     dp.startup.register(start_bot)
@@ -56,6 +49,7 @@ async def start():
     async def stop(message: Message):
         if message.from_user.id == settings.bots.admin_id or get_permission(id=message.from_user.id) == 'super_user':
             await message.answer(f'Окей, бот будет выключен')
+            stop_bot()
             quit()
         else:
             await message.answer_sticker(sticker='CAACAgIAAxkBAAIHKmWlI-9p2YHzsboRA0do6Ilxszq6AAJ-AAPBnGAMCxR_3b0i_fM0BA')

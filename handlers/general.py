@@ -6,7 +6,8 @@ from aiogram.fsm.state import StatesGroup, State
 from keyboards import get_inlane_keyboard
 from aiogram.utils.markdown import hlink
 from database.insert_db import insert_id, insert_fio, insert_phone_number
-from database.get_from_db import is_login, count_users
+from database.get_from_db import is_login, count_users, is_ok_fio
+from database.delete_from_db import delete_all, delete_fio, delete_phone_number
 import re
 
 router = Router()
@@ -24,14 +25,18 @@ class Base(StatesGroup):
 
 @router.message(CommandStart())
 async def welcome(message: Message, state: FSMContext):
-    login = str(is_login(message.from_user.id))
-    if login != '[]':    
+    fio = is_ok_fio(message.from_user.id)
+    print(fio)
+    if fio == True:   
         await state.set_state(Base.start)
         await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
     else:
+        delete_all(message.from_user.id)
         insert_id(id=message.from_user.id)
         await state.set_state(Base.fio)
         await message.answer(f'Привет👋, кажется мы еще не знакомы. Доступ к боту могут иметь лишь тренера.\n\nДля авторизации пришли мне свое ФИО, пожалуйста')
+
+
 
 @router.message(F.text and Base.fio)
 async def reg_fio(message:Message,state: FSMContext):
@@ -63,7 +68,7 @@ async def reg_phone_number(message:Message,state: FSMContext):
         elif len(phone) == 12:
             phone = '+' + phone[:1] + ' (' + phone[2:5] + ') ' + phone[5:8] + '-' + phone[8:]
         insert_phone_number(id=message.from_user.id, phone_number= message.text)
-        await message.answer(f'Записываю ваш номер как <u>{message.text}</u>')
+        await message.answer(f'Записываю ваш номер как <u>{phone}</u>')
         await state.set_state(Base.start)
         await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))    
     else:

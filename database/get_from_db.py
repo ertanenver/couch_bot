@@ -1,4 +1,5 @@
 import sqlite3
+import re
 
 def is_login(id:int):
     connection = sqlite3.connect('couch_bot.db')
@@ -14,6 +15,31 @@ def is_login(id:int):
 
     return result
 
+
+
+def is_ok_fio(id:int):
+    connection = sqlite3.connect('couch_bot.db')
+
+    cursor = connection.cursor()
+
+    cursor.execute('SELECT * FROM Users WHERE id = "%s"' % (id))
+    result = cursor.fetchall()
+    print(result)
+    if result[0][1]:
+        pattern = r'^[а-яА-Я]+\s[а-яА-Я]+\s[а-яА-Я]+$'
+        match = re.match(pattern, result[0][1])
+        if match:
+            result = True
+        else:
+            result = False
+    else:
+        result = False 
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return result
 
 
 def get_feature(id:int):
@@ -33,7 +59,6 @@ def get_feature(id:int):
     connection.close()
 
     return result
-
 
 
 def get_feature_list():

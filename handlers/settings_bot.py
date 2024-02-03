@@ -48,6 +48,7 @@ async def settings_sum_kvit_on_page(call: CallbackQuery, state: FSMContext):
 async def feature(message: Message, state: FSMContext):
     insert_feature(id=message.from_user.id, feature= message.text)
     await message.answer(f'{message.text} теперь добавляется в назначение ваших квитанций')
+    await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))
 
 
 
