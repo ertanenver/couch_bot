@@ -10,13 +10,18 @@ from database.get_from_db import count_users, get_permission, get_permission_lis
 from database.insert_db import insert_id,insert_fio,insert_permission
 
 async def start_bot(bot: Bot):
-    for admin in get_permission_list():
-        await bot.send_message(admin, text='Запущен бот\n"Соревновательный"\n\n/start')
+    try:
+        for admin in get_permission_list():
+            await bot.send_message(admin, text='Запущен бот\n"Соревновательный"\n\n/start')
+    except:
+        pass
 
 async def stop_bot(bot: Bot):
-    for admin in get_permission_list():
-        await bot.send_message(admin, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего пользователей</i>: {count_users()}</u>')
-
+    try:
+        for admin in get_permission_list():
+            await bot.send_message(admin, text=f'Остановлен бот\n"Соревновательный"\n\n<u><i>Всего пользователей</i>: {count_users()}</u>')
+    except:
+        pass
 
 async def start():
     logging.basicConfig(level=logging.INFO,

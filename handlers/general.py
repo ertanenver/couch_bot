@@ -7,6 +7,8 @@ from keyboards import get_inlane_keyboard
 from aiogram.utils.markdown import hlink
 from database.insert_db import insert_id, insert_fio, insert_phone_number
 from database.get_from_db import is_login, count_users
+import re
+
 router = Router()
 
 class Base(StatesGroup):
@@ -33,15 +35,39 @@ async def welcome(message: Message, state: FSMContext):
 
 @router.message(F.text and Base.fio)
 async def reg_fio(message:Message,state: FSMContext):
-    insert_fio(id=message.from_user.id, fio= message.text)
-    await message.answer(f'Хорошо, запомню вас как <i>{message.text}</i>')
-    await state.set_state(Base.phone_number)
-    await message.answer(f'Осталось чуть-чуть...\nПередайте мне теперь свой номер телефона\n\nОбратите внимание, для безопасности данных, можно использовать только один аккаунт в тг для его смены придется обращаться к администратору')
+    pattern = r'^[а-яА-Я]+\s[а-яА-Я]+\s[а-яА-Я]+$'
+    match = re.match(pattern, message.text)
+    if match:
+        insert_fio(id=message.from_user.id, fio=message.text)
+        await message.answer(f'Хорошо, запомню вас как <i>{message.text}</i>')
+        await state.set_state(Base.phone_number)
+        await message.answer(f'Осталось чуть-чуть...\nПередайте мне теперь свой номер телефона\n\nОбратите внимание, для безопасности данных, можно использовать только один аккаунт в тг для его смены придется обращаться к администратору')
+    else:
+        await message.answer(f'Кажется: <i>{message.text}</i>, не похоже на ФИО. Попробуйте еще раз')
+    
 
+    
 @router.message(F.text and Base.phone_number or F.contact and Base.phone_number)
 async def reg_phone_number(message:Message,state: FSMContext):
-    insert_phone_number(id=message.from_user.id, phone_number= message.text)
-    await message.answer(f'Записываю ваш номер как <u>{message.text}</u>')
+    digits_pattern = r'\d'
+    matches = re.findall(digits_pattern, message.text)
+
+    if len(matches) >= 10:
+        phone = re.sub(r'\D', '', message.text)
+
+        # Проверка длины номера телефона
+        if len(phone) == 10:
+            phone = '+7 (' + phone[:3] + ') ' + phone[3:6] + '-' + phone[6:]
+        elif len(phone) == 11:
+            phone = '+7 (' + phone[1:4] + ') ' + phone[4:7] + '-' + phone[7:]
+        elif len(phone) == 12:
+            phone = '+' + phone[:1] + ' (' + phone[2:5] + ') ' + phone[5:8] + '-' + phone[8:]
+        insert_phone_number(id=message.from_user.id, phone_number= message.text)
+        await message.answer(f'Записываю ваш номер как <u>{message.text}</u>')
+        await state.set_state(Base.start)
+        await message.answer(f'Привет!👋\nЯ тренерский бот Федерации тхэквон-до Тамбовской области\n\nЧто вы хотите сделать?👇', reply_markup=get_inlane_keyboard('welcome_msg'))    
+    else:
+        await message.answer(f'Ваш ввод: <u>{message.text}</u> не похож на номер телефона, попробуйте еще раз')
 
 
 
